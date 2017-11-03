@@ -1,0 +1,153 @@
+/* GLOBAL VARIABLES */
+var listOfProducts;
+// add more global variables when needed..
+
+/* Get products from the json file and store it in a javascript variable */
+fetch("./products.json")
+.then(function(response) {
+    return response.json();
+})
+.then(function(products) {
+    listOfProducts = products;
+    createUIFromLoadedProducts();
+});
+
+/** Uses the loaded products data to create a visible product list on the website */
+
+
+var cartNr = document.createElement("h2");
+var productsInCart = [];
+
+function add(y){ 
+    
+    productsInCart.push(listOfProducts[y]);
+    cartNr.innerHTML = productsInCart.length;
+    console.log(y);
+};
+
+function createCartUI() {
+    var content = document.querySelector("#content");
+    content.innerHTML = '';
+
+    var finalContent = {};
+
+    for (var i = 0; productsInCart.length > i; i++) {
+
+        var y = productsInCart[i];
+
+        y.count = productsInCart.filter(function(element){
+            y.title == element.title 
+        }).length
+
+        finalContent[y.title] = y
+    }
+
+    var prodList = document.createElement("ul");
+
+    //debugger;
+
+    Object.keys(finalContent).forEach(function (key) { 
+        var product = finalContent[key]
+
+        var productItem = document.createElement("li");
+        prodList.appendChild(productItem);
+
+        var productTitle = document.createElement("h1");
+        productTitle.className = "productTitle";
+        productTitle.innerHTML = product.title;
+        productItem.appendChild(productTitle);
+
+        var productDesc = document.createElement("p");
+        productDesc.className = "productDesc";
+        productDesc.innerHTML = product.description;
+        productItem.appendChild(productDesc);
+
+        var productImg = document.createElement("img");
+        productImg.className = "productImg";
+        productImg.src = "assets/" + product.image;
+        productItem.appendChild(productImg);
+
+        var productPrice = document.createElement("h3");
+        productPrice.className = "productPrice";
+        productPrice.innerHTML = product.price + " :-" + product.count ;
+        productItem.appendChild(productPrice);
+
+        var productButton = document.createElement("button");
+        productButton.innerHTML = ' Slutför Beställning!';
+        productButton.className = "productButton";
+       
+        productItem.appendChild(productButton);
+        
+
+       
+
+    })
+    content.appendChild(prodList);
+
+    
+}
+
+var cart = document.querySelector("#cart");
+
+cart.addEventListener('click', function(){
+    createCartUI();
+})
+
+cart.appendChild(cartNr);
+
+function createUIFromLoadedProducts() {
+
+    var content = document.querySelector("#content");
+    
+        var prodList = document.createElement("ul");
+        
+        for(var i = 0; i < listOfProducts.length; i++)
+        {
+            var product = listOfProducts[i];
+    
+            var productItem = document.createElement("li");
+            prodList.appendChild(productItem);
+    
+            var productTitle = document.createElement("h1");
+            productTitle.className = "productTitle";
+            productTitle.innerHTML = product.title;
+            productItem.appendChild(productTitle);
+
+            var productDesc = document.createElement("p");
+            productDesc.className = "productDesc";
+            productDesc.innerHTML = product.description;
+            productItem.appendChild(productDesc);
+    
+            var productImg = document.createElement("img");
+            productImg.className = "productImg";
+            productImg.src = "assets/" + product.image;
+            productItem.appendChild(productImg);
+
+            var productPrice = document.createElement("h3");
+            productPrice.className = "productPrice";
+            productPrice.innerHTML = product.price + " :-";
+            productItem.appendChild(productPrice);
+    
+            var productButton = document.createElement("button");
+            productButton.innerHTML = ' <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>  Lägg till i kundvagnen';
+            productButton.className = "productButton";
+            productButton.setAttribute('onclick', 'add('+i+');');  
+            /*productButton.addEventListener("click", function(){
+                add(listOfProducts[i]);
+            });*/
+            productItem.appendChild(productButton);
+                
+        };
+    
+        content.appendChild(prodList);
+    
+        
+    }
+    
+
+
+  
+
+    
+
+
